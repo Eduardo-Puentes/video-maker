@@ -1,11 +1,17 @@
 import requests
-image_url = "https://cdn.pixabay.com/audio/2020/11/10/audio_547ebbf828.mp3"
+song_url = "https://cdn.pixabay.com/audio/2020/11/10/audio_547ebbf828.mp3"
 
-r = requests.get(image_url)
+links = []
 
-filename = "song1"
+for i in range(1):
+    links.append(image_url)
 
-route = "files/" + "filename" + ".mp3"
+for i in range(len(links)):
+    r = requests.get(links[i])
 
-with open(route, 'wb') as f:
-    f.write(r.content)
+    filename = "song" + str(i)
+
+    route = "files/" + filename + ".mp3"
+
+    with open(route, 'wb') as f:
+        f.write(r.content)
