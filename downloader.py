@@ -1,10 +1,26 @@
+from selenium import webdriver
+from bs4 import BeautifulSoup
 import requests
-song_url = "https://cdn.pixabay.com/audio/2020/11/10/audio_547ebbf828.mp3"
 
-links = []
+for i in range(2):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument("--test-type")
+    driver = webdriver.Chrome(
+        executable_path=r'chromedriver_win3\chromedriver.exe', chrome_options=options)
+    driver.get(
+        'https://pixabay.com/music/search/mood/relaxing/?page=' + str((i + 1)))
 
-for i in range(1):
-    links.append(image_url)
+    html = driver.page_source
+
+    soup = BeautifulSoup(html, "lxml")
+
+    songs = soup.find_all("input", class_="track-source")
+
+    links = []
+
+    for song in songs:
+        links.append(song.get("value"))
 
 for i in range(len(links)):
     r = requests.get(links[i])
@@ -15,3 +31,5 @@ for i in range(len(links)):
 
     with open(route, 'wb') as f:
         f.write(r.content)
+
+    print("song " + str(i) + " ready!")
