@@ -1,5 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
+from api import API_KEY
+import json
 import requests
 
 
@@ -11,6 +13,11 @@ def main():
 
     # download the songs by his link
     download_songs(songs_links)
+
+    video_links = load_videos()
+    print("There are " + str(len(video_links)) + " videos to download")
+
+    download_videos(video_links)
 
 
 def load_songs():
@@ -51,12 +58,43 @@ def download_songs(links):
 
         filename = "song" + str(i)
 
-        route = "files/" + filename + ".mp3"
+        route = "files/music/" + filename + ".mp3"
 
         with open(route, 'wb') as f:
             f.write(r.content)
 
         print("song " + str(i) + " ready!")
+
+
+def load_videos():
+    links = []
+    r = requests.get("https://api.pexels.com/videos/search?query=nature&per_page=10", headers={
+        'Authorization': API_KEY})
+
+    response = json.loads(r.text)
+
+    for j in response["videos"]:
+        found = False
+        for k in j["video_files"]:
+            if not found and k["quality"] == "hd":
+                found = True
+                links.append(k["link"])
+
+    return links
+
+
+def download_videos(links):
+    for link in links:
+        r = requests.get(link)
+
+        filename = "video" + str(video_count)
+
+        route = "files/video/" + filename + ".mp4"
+
+        with open(route, 'wb') as f:
+            f.write(r.content)
+
+        video_count = video_count + 1
 
 
 if __name__ == "__main__":

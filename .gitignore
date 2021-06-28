@@ -1,3 +1,5 @@
 files
 tests
 chromedriver_win3
+api.py
+__pycache__
